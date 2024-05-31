@@ -17,29 +17,29 @@ def update_summoner_spells():
     
     for spell in raw_data:
         spells.append(
-            {
+            {   
                 "id": spell,
-                "name": raw_data[spell]["name"],
-                "description": raw_data[spell]["description"],
-                "tooltip": raw_data[spell]["tooltip"],
-                "maxrank": raw_data[spell]["maxrank"],
                 "cooldown": raw_data[spell]["cooldown"],
                 "cooldownBurn": raw_data[spell]["cooldownBurn"],
                 "cost": raw_data[spell]["cost"],
                 "costBurn": raw_data[spell]["costBurn"],
+                "costType": raw_data[spell]["costType"],
                 "datavalues": raw_data[spell]["datavalues"],
+                "description": raw_data[spell]["description"],
                 "effect": raw_data[spell]["effect"],
                 "effectBurn": raw_data[spell]["effectBurn"],
-                "vars": raw_data[spell]["vars"],
+                "image": raw_data[spell]["image"],
                 "key": raw_data[spell]["key"],
-                "summonerLevel": raw_data[spell]["summonerLevel"],
-                "modes": raw_data[spell]["modes"],
-                "costType": raw_data[spell]["costType"],
                 "maxammo": raw_data[spell]["maxammo"],
+                "maxrank": raw_data[spell]["maxrank"],
+                "modes": raw_data[spell]["modes"],
+                "name": raw_data[spell]["name"],
                 "range": raw_data[spell]["range"],
                 "rangeBurn": raw_data[spell]["rangeBurn"],
-                "image": raw_data[spell]["image"],
                 "resource": raw_data[spell]["resource"]
+                "summonerLevel": raw_data[spell]["summonerLevel"],
+                "tooltip": raw_data[spell]["tooltip"],
+                "vars": raw_data[spell]["vars"],
             }
         )
 
