@@ -50,12 +50,12 @@ def update_runes():
     region = "euw1"
     versions = lol_watcher.data_dragon.versions_for_region(region)
     runes_reforged_version = versions["v"]
-    runes_reforged = lol_watcher.data_dragon.runes_reforged(runes_reforged_version)
+    data = lol_watcher.data_dragon.runes_reforged(runes_reforged_version)
     runes = []
     keys = []
     slots = []
 
-    for key in runes_reforged:
+    for key in data:
         keys.append(
             {
                 "id": key["id"],
