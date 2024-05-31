@@ -1,7 +1,8 @@
 from riotwatcher import LolWatcher, ApiError
 import os
 from dotenv import load_dotenv
-from models.static_db import SummonerSpells
+from models.static_db import SummonerSpells, Runes, RuneSlots, RuneKeys
+import pprint
 
 load_dotenv()
 
@@ -12,37 +13,82 @@ def update_summoner_spells():
     versions = lol_watcher.data_dragon.versions_for_region(region)
     summoner_spells_version = versions["v"]
     summoner_spells = lol_watcher.data_dragon.summoner_spells(summoner_spells_version)
-    raw_data = summoner_spells["data"]
+    data = summoner_spells["data"]    
     spells = []
-    
-    for spell in raw_data:
+
+    for spell in data:
         spells.append(
             {   
                 "id": spell,
-                "cooldown": raw_data[spell]["cooldown"],
-                "cooldownBurn": raw_data[spell]["cooldownBurn"],
-                "cost": raw_data[spell]["cost"],
-                "costBurn": raw_data[spell]["costBurn"],
-                "costType": raw_data[spell]["costType"],
-                "datavalues": raw_data[spell]["datavalues"],
-                "description": raw_data[spell]["description"],
-                "effect": raw_data[spell]["effect"],
-                "effectBurn": raw_data[spell]["effectBurn"],
-                "image": raw_data[spell]["image"],
-                "key": raw_data[spell]["key"],
-                "maxammo": raw_data[spell]["maxammo"],
-                "maxrank": raw_data[spell]["maxrank"],
-                "modes": raw_data[spell]["modes"],
-                "name": raw_data[spell]["name"],
-                "range": raw_data[spell]["range"],
-                "rangeBurn": raw_data[spell]["rangeBurn"],
-                "resource": raw_data[spell]["resource"]
-                "summonerLevel": raw_data[spell]["summonerLevel"],
-                "tooltip": raw_data[spell]["tooltip"],
-                "vars": raw_data[spell]["vars"],
+                "cooldown": data[spell]["cooldown"],
+                "cooldownBurn": data[spell]["cooldownBurn"],
+                "cost": data[spell]["cost"],
+                "costBurn": data[spell]["costBurn"],
+                "costType": data[spell]["costType"],
+                "datavalues": data[spell]["datavalues"],
+                "description": data[spell]["description"],
+                "effect": data[spell]["effect"],
+                "effectBurn": data[spell]["effectBurn"],
+                "image": data[spell]["image"],
+                "key": data[spell]["key"],
+                "maxammo": data[spell]["maxammo"],
+                "maxrank": data[spell]["maxrank"],
+                "modes": data[spell]["modes"],
+                "name": data[spell]["name"],
+                "range": data[spell]["range"],
+                "rangeBurn": data[spell]["rangeBurn"],
+                "resource": data[spell]["resource"],
+                "summonerLevel": data[spell]["summonerLevel"],
+                "tooltip": data[spell]["tooltip"],
+                "vars": data[spell]["vars"],
             }
         )
 
-    SummonerSpells.insert_many(spells).execute()    
+    SummonerSpells.insert_many(spells).on_conflict_replace().execute()    
+
+def update_runes():
+    region = "euw1"
+    versions = lol_watcher.data_dragon.versions_for_region(region)
+    runes_reforged_version = versions["v"]
+    runes_reforged = lol_watcher.data_dragon.runes_reforged(runes_reforged_version)
+    runes = []
+    keys = []
+    slots = []
+
+    for key in runes_reforged:
+        keys.append(
+            {
+                "id": key["id"],
+                "key": key["key"],
+                "icon": key["icon"],
+                "name": key["name"],
+            }
+        )
+
+        for slot in key["slots"]:
+            slots.append(
+                {
+                    "rune_1": slot["runes"][0]["id"],
+                    "rune_2": slot["runes"][1]["id"],
+                    "rune_3": slot["runes"][2]["id"],
+                }
+            )
+
+            for rune in slot["runes"]:
+                runes.append(
+                    {
+                        "id": rune["id"],
+                        "key": rune["key"],
+                        "icon": rune["icon"],
+                        "name": rune["name"],
+                        "shortDesc": rune["shortDesc"],
+                        "longDesc": rune["longDesc"],
+                    }
+                )
+
+    Runes.insert_many(runes).on_conflict_replace().execute()
+    RuneSlots.insert_many(slots).on_conflict_replace().execute()
+    RuneKeys.insert_many(keys).on_conflict_replace().execute()
 
 update_summoner_spells()
+update_runes()

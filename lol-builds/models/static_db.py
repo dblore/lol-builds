@@ -35,6 +35,25 @@ class SummonerSpells(BaseModel):
     tooltip = TextField()
     vars = TextField()
 
+class Runes(BaseModel):
+    id = TextField(unique=True, primary_key=True)
+    key = TextField()
+    icon = TextField()
+    name = TextField()
+    shortDesc = TextField()
+    longDesc = TextField()
+
+class RuneSlots(BaseModel):
+    rune_1 = ForeignKeyField(Runes, primary_key=True)
+    rune_2 = ForeignKeyField(Runes)
+    rune_3 = ForeignKeyField(Runes)
+
+class RuneKeys(BaseModel):
+    id = TextField(unique=True, primary_key=True)
+    key = TextField()
+    icon = TextField()
+    name = TextField()
+
 static_db.connect()
-static_db.create_tables([SummonerSpells])
+static_db.create_tables([SummonerSpells, Runes, RuneSlots, RuneKeys])
 static_db.close()
