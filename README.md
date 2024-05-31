@@ -1,1 +1,1 @@
-# lolbuilds
+# lol-builds
